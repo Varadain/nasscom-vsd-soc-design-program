@@ -747,9 +747,7 @@ DAY2_Good floorplan vs bad floorplan and introduction to library cells:
 ### 1. **Aspect Ratio (Ar)**:
    a) **Definition**: The aspect ratio of a layout is the ratio of its height to its width.  
    b) **Formula**:  
-      \[
-      \text{Aspect Ratio (Ar)} = \frac{\text{Width}}{\text{Height}}
-      \]
+     Aspect Ratio (Ar)= Width/Height
    c) **Interpretation**:  
       - If the aspect ratio is **1**, the height and width are the same, making the core **square**.
       - If the aspect ratio is greater than 1, the core is wider than it is tall, and if it's less than 1, the core is taller than it is wide.
@@ -757,10 +755,9 @@ DAY2_Good floorplan vs bad floorplan and introduction to library cells:
 ### 2. **Utilization Factor**:
    a) **Definition**: The utilization factor measures how much of the total available area is used by logic elements or standard cells in a design.
    b) **Formula**:  
-      \[
-      \text{Utilization Factor} = \frac{\text{Area occupied by standard cells}}{\text{Total available area in the block or chip}}
-      \]
-   c) **Interpretation**:  
+     Utilization Factor= Area occupied by standard cells/Total available area in the block or chip
+
+​   c) **Interpretation**:  
       - If the utilization factor is **0.5** (50%), it means that half of the chip or design block area is used for placing cells, while the other 50% is available for routing (connecting the cells).
 
 ### 3. **Tap Cell**:
@@ -779,3 +776,19 @@ DAY2_Good floorplan vs bad floorplan and introduction to library cells:
       - This is a **default file** used by the system to set up the basic floorplan configuration if no specific configurations are provided by the user. It is used as a fallback and is the **third priority**.
 
 Each of these steps ensures that the design follows the right process and is optimized for functionality and manufacturability.
+
+
+LAB2 :
+Screenshot of run_floorplan : 
+Step performed : 
+    1. cd Desktop/work/tools/openlane_working_dir/openlane
+
+    2.    docker
+    3.    ./flow.tcl -interactive 
+    4.    prep -design picorv32a
+    5.    run_synthesis
+    6.    run_floorplan
+    
+    ![1  run_floorplan](https://github.com/user-attachments/assets/68f1e0d5-3c90-4826-ab54-cc2a9b7635a3)
+   ![2  run floorplan](https://github.com/user-attachments/assets/da859c5c-e784-4039-b83a-8fb5b8241866)
+
