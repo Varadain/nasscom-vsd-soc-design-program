@@ -982,4 +982,86 @@ b) plot a
 ![9  plot](https://github.com/user-attachments/assets/406ec6cb-9941-43e6-956e-f765185d554a)
 ![8  ngspice](https://github.com/user-attachments/assets/86fbe09a-8e38-4d2d-a727-cabb8c3bbbc1)
 
+1. Rise Time  
+   a) Rise time is the time it takes for a signal to go from a low value (22% of maximum) to a high value (80% of maximum).  
+   b) Formula: Rise Time = Time at 80% - Time at 20%  
+      - 80% of 3.3V = 2.64V  
+      - 20% of 3.3V = 0.66V  
+      - Rise time = 6.16096 - 4.03964 = 2.12132 ps  
+
+2. Fall Time  
+   a) Fall time is the time it takes for a signal to drop from a high value (80% of maximum) to a low value (20% of maximum).  
+   b) Formula: Fall Time = Time at 80% - Time at 20%  
+      - Fall time = 2.09 - 2.03 = 0.03 ps = 30 ps  
+
+3. Rise Cell Delay  
+   a) Rise cell delay is the time difference between the output at 50% and the input at 50% of their respective signal levels.  
+   b) Formula: Rise Cell Delay = Tout 50% - Tin 50%  
+      - Rise cell delay = 2.12414 - 2.06000 = 0.06414 ps = 64.14 ps  
+
+4. Fall Cell Delay  
+   a) Fall cell delay is the time difference between the output at 50% and the input at 50% of their respective signal levels.  
+   b) Formula: Fall Cell Delay = Tout 50% - Tin 50%  
+      - Fall cell delay = 4.02667 - 4.00483 = 0.02184 ps = 21.84 ps
+  
+1. Go to your home directory:
+a) Open a terminal (command line) on your system.
+b) Use the command cd ~ to navigate to your home directory.
+
+2. Download the lab files:
+a) Use the wget command to download the lab file archive:
+bash wget http://opencircuitdesign.com/open_pdks/archive/drc_tests.tgz
+(This retrieves the file from the internet.)
+
+3. Extract the downloaded file:
+a) Use the command to extract the contents of the compressed file:
+bash tar xfz drc_tests.tgz
+(This creates a new folder named drc_tests with the extracted contents.)
+
+4. Navigate to the extracted folder:
+a) Change your current directory to the folder drc_tests by typing:
+bash cd drc_tests
+
+5. View the .magicrc file:
+a) Open the .magicrc configuration file in the gvim text editor:
+bash gvim .magicrc
+(This file contains settings for the Magic tool.)
+
+6. Open the Magic tool with better graphics:
+a) Launch the Magic tool with the -d XR option for improved graphical display:
+bash magic -d XR &
+(The & runs the Magic tool in the background, leaving the terminal free for other commands.)
+![10  drc](https://github.com/user-attachments/assets/c26922a4-313e-45cf-88bb-f32a3ac38ab2)
+![11  gvim](https://github.com/user-attachments/assets/ceac709a-f79f-4995-96e4-d6e730f8b362)
+
+LOAD POLY::
+![12  load poly](https://github.com/user-attachments/assets/959a0232-08db-4fe8-a7ee-44ab9109dcd6)
+
+ LAB6_to fix poly.9
+
+1. **Understanding the Rule**:  
+   - **a)** *What is the poly.9 rule?*  
+      The *poly.9* rule specifies that the spacing between a **poly resistor** and either another **poly layer** or a **diffusion/tap layer** should be at least **0.480 µm**.  
+   - **b)** *Why is this rule important?*  
+      It ensures proper isolation between components to avoid electrical interference or undesired connections in the circuit layout.  
+
+2. **Observation**:  
+   - **a)** *What’s happening in the layout?*  
+      In the layout being checked, the spacing between the **poly resistor** and the other layers is **less than 0.480 µm**.  
+   - **b)** *Expected result?*  
+      This should cause a Design Rule Check (DRC) violation because it doesn't meet the **poly.9 rule** requirements.
+
+3. **Issue**:  
+   - **a)** *What’s the problem?*  
+      Despite the spacing being **less than 0.480 µm**, the Design Rule Check **is not flagging any violation**.  
+   - **b)** *Why is this surprising?*  
+      It suggests either a **tool issue** (e.g., incorrect rule implementation in the DRC tool) or an **exception/override** that allows this condition.
+
+4. **Next Steps**:  
+   - **a)** *Investigate the DRC settings*:  
+      Check the DRC rule deck to ensure the **poly.9 rule** is correctly defined and enabled.  
+   - **b)** *Verify any exceptions*:  
+      Look for specific exceptions or conditions in the technology file or rule deck that may allow spacing violations in certain cases.  
+   - **c)** *Cross-check with the foundry*:  
+      Confirm with the foundry team if there’s a scenario where **poly.9** violations are permitted or ignored.  
 
