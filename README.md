@@ -899,3 +899,87 @@ Here's the explanation of **Placement in Physical Design** pointwise and in simp
 ![5  placement](https://github.com/user-attachments/assets/095b9146-bafc-43c0-be8e-d9c28c5c5d1a)
 ![6  placement](https://github.com/user-attachments/assets/f712c9b3-a720-4b16-80c9-11ce383c72e6)
 ![7  placement 2](https://github.com/user-attachments/assets/cfce374a-0e98-493c-876e-023a5d5424c5)
+
+LAB3_Design library cell using Magic Layout and ngspice characterization
+   1.  Cloning custom inverter standard cell design from github repository:
+![1  clone](https://github.com/user-attachments/assets/469660b1-737c-4bf3-abb1-5744b78f1168)
+ 2. Copying magic tech file to vsdstdcelldesign
+ 3. opening custom inverter in magic tool
+           command :   magic -T sky130A.tech sky130_inv.mag &
+  ![2  inverter](https://github.com/user-attachments/assets/10f68e6b-4a1b-4488-a20b-eef98f2d71fa)
+nmos & pmos:
+![4  magic pmos](https://github.com/user-attachments/assets/a6730589-8221-47b2-a19a-c0754a798cb9)
+
+  ![3  magic what](https://github.com/user-attachments/assets/60dd367f-607f-4d7d-b374-b1c3a0d53d80)
+  
+### **SPICE Extraction of an Inverter in Magic Tool**
+SPICE extraction is a process in which Magic extracts the circuit netlist (connections, components, etc.) from the layout. This netlist can then be simulated in a SPICE simulator like Ngspice.
+
+Here’s the step-by-step explanation of the commands:
+
+---
+
+### **1. Command: `pwd`**
+- **Purpose:**  
+  Displays the **present working directory** where your files are saved.
+- **Why is it important?**  
+  It ensures that you know where Magic is saving the output files (e.g., `.spice` file).
+
+---
+
+### **2. Command: `extract all`**
+- **Purpose:**  
+  Extracts the design data from the layout and creates an intermediate `.ext` file.  
+- **What does it do?**  
+  - Reads the layout to understand the components (e.g., transistors) and connections.  
+  - Converts layout information (e.g., layers, shapes) into a format suitable for SPICE simulation.  
+
+---
+
+### **3. Command: `ext2spice cthresh 0 rthresh 0`**
+- **Purpose:**  
+  Configures SPICE netlist generation with no thresholds for capacitance (`cthresh`) and resistance (`rthresh`).  
+- **What does it do?**  
+  - `cthresh 0`: Includes all capacitances, even small ones.  
+  - `rthresh 0`: Includes all resistances, even small ones.  
+  - Ensures a **complete extraction** of the circuit, including parasitics (resistances and capacitances).
+
+---
+
+### **4. Command: `ext2spice`**
+- **Purpose:**  
+  Converts the `.ext` file into a SPICE netlist (`.spice` file).  
+- **What does it generate?**  
+  - A `.spice` file containing:
+    - Transistor models.
+    - Connections (nets) between components.
+    - Parasitic resistances and capacitances.
+  - This netlist can be used in SPICE simulators like Ngspice or HSPICE.
+
+---
+
+### **End Result:**
+After running these commands, you’ll have:
+1. A `.spice` file for your inverter.
+2. This file can be used for **circuit simulation** to analyze the behavior (e.g., switching, delays, power).
+![6  spice file](https://github.com/user-attachments/assets/8bdb02b6-abdd-4e5c-aa03-de5f6fb1d6e2)
+![5  extract](https://github.com/user-attachments/assets/8904a992-9239-4e8e-96eb-408458800d50)
+
+1. Command to directly load a SPICE file for simulation:
+a) ngspice sky130_inv.spice
+- What it does: This command opens the SPICE simulation software (ngspice) and directly loads the SPICE file named sky130_inv.spice.
+- Purpose: It sets up the simulation environment using the contents of this file, which typically contains the circuit description and simulation parameters.
+
+2. Plotting simulation results in ngspice:
+a) plot y vs time
+- What it does: Once the simulation runs, this command plots the value of y (an output signal defined in the SPICE file) as a function of time.
+- Purpose: It visualizes how the output signal changes over time during the simulation.
+
+b) plot a
+- What it does: This command plots the signal or node value labeled as a (likely an input or intermediate signal in the circuit) from the SPICE file.
+- Purpose: It provides insight into the behavior of another part of the circuit, helping in debugging or analyzing the simulation.
+  ![7  updated spice](https://github.com/user-attachments/assets/54efcf8e-e0b9-4b07-857a-917c398246c0)
+![9  plot](https://github.com/user-attachments/assets/406ec6cb-9941-43e6-956e-f765185d554a)
+![8  ngspice](https://github.com/user-attachments/assets/86fbe09a-8e38-4d2d-a727-cabb8c3bbbc1)
+
+
