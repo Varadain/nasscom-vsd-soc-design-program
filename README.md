@@ -1063,5 +1063,126 @@ LOAD POLY::
    - **b)** *Verify any exceptions*:  
       Look for specific exceptions or conditions in the technology file or rule deck that may allow spacing violations in certain cases.  
    - **c)** *Cross-check with the foundry*:  
-      Confirm with the foundry team if there’s a scenario where **poly.9** violations are permitted or ignored.  
+      Confirm with the foundry team if there’s a scenario where **poly.9** violations are permitted or ignored.
+
+ **Pre-Layout Timing Analysis**
+
+### **1. Generate LEF from the layout**
+   - **a)** Ensure the **input and output ports of the standard cell** align with the **intersection of vertical and horizontal tracks** (defined by `tracks.info` of `sky130_fd_sc_hd`).
+   - **b)** Use the `tkcon` (Tcl Console) window to set the grid to match the tracks of the **locali** layer.
+   - **c)** Set the **width** and **height** of the standard cell to meet these criteria:
+     - **Width:** Must be an odd multiple of the `xpitch` (or x-direction). 
+     - **Height:** Must be an even multiple of the `ypitch` (or y-direction). 
+   - **d)** Save the layout using the `tkcon` window and export it as a new LEF file.
+
+---
+
+### **2. Include the new cell in synthesis**
+   - **a)** Copy the new LEF file to:
+     ```
+     /Desktop/work/tools/openlane_working_dir/openlane/designs/picorv32a/src/
+     ```
+   - **b)** Copy the required `.lib` files (e.g., `sky130_fd_sc_hd.lib`) to the same directory.
+   - **c)** Edit the `config.tcl` file to include these libraries:
+     ```
+     set ::env(LIB_SYNTH) "$::env(OPENLANE_ROOT)/designs/picorv32a/src/sky130_fd_sc_hd__typical.lib"
+     set ::env(LIB_FASTEST) "$::env(OPENLANE_ROOT)/designs/picorv32a/src/sky130_fd_sc_hd__fast.lib"
+     set ::env(LIB_SLOWEST) "$::env(OPENLANE_ROOT)/designs/picorv32a/src/sky130_fd_sc_hd__slow.lib"
+     set ::env(LIB_TYPICAL) "$::env(OPENLANE_ROOT)/designs/picorv32a/src/sky130_fd_sc_hd__typical.lib"
+     set ::env(EXTRA_LEFS) [glob $::env(OPENLANE_ROOT)/designs/$::env(DESIGN_NAME)/src/*.lef]
+     ```
+
+---
+
+### **3. OpenLane Flow: Synthesis with the new cell**
+   - **a)** Navigate to the OpenLane directory:
+     ```
+     cd Desktop/work/tools/openlane_working_dir/openlane
+     ```
+   - **b)** Start Docker:
+     ```
+     docker
+     ```
+   - **c)** Run OpenLane interactively:
+     ```
+     ./flow.tcl -interactive
+     ```
+   - **d)** Load OpenLane version 0.9:
+     ```
+     package require openlane 0.9
+     ```
+   - **e)** Prepare the design:
+     ```
+     prep -design picorv32a 
+     ```
+   - **f)** Add the LEF file:
+     ```
+     set lefs [glob $::env(DESIGN_DIR)/src/*.lef]
+     add_lefs -src $lefs
+     ```
+   - **g)** Modify synthesis settings:
+     - Check current synthesis strategy:
+       ```
+       echo $::env(SYNTH_STRATEGY)
+       ```
+     - Set synthesis strategy for **DELAY 3**:
+       ```
+       set ::env(SYNTH_STRATEGY) "DELAY 3"
+       ```
+     - Enable synthesis sizing:
+       ```
+       set ::env(SYNTH_SIZING) 1
+       ```
+
+---
+
+### **4. Run Synthesis and Floorplanning**
+   - **a)** Start synthesis:
+     ```
+     run_synthesis
+     ```
+   - **b)** Begin floorplanning:
+     ```
+     run_floorplan
+     ```
+   - **c)** If errors occur during floorplanning, run individual commands:
+     - Initialize floorplan:
+       ```
+       init_floorplan
+       ```
+     - Place I/O cells:
+       ```
+       place_io
+       ```
+     - Add tap and decap cells:
+       ```
+       tap_decap_or
+       ```
+
+---
+
+### **5. Perform Placement**
+   - **a)** Start the placement:
+     ```
+     run_placement
+     ```
+   - **b)** View placement with `magic`:
+     ```
+     magic -T /home/vsduser/Desktop/work/tools/openlane_working_dir/pdks/sky130A/libs.tech/magic/sky130A.tech \
+     lef read ../../tmp/merged.lef \
+     def read picorv32a.placement.def &
+     ```
+
+---
+
+### **6. Timing Analysis**
+   - After placement, evaluate timing slack:
+     - **Total Negative Slack (TNS)**: Initially, TNS = -711.59.
+     - **Worst Negative Slack (WNS)**: Initially, WNS = -23.89.
+   - Adjust synthesis and floorplanning until TNS and WNS = 0.
+![13 box](https://github.com/user-attachments/assets/d1cbdd6e-a617-4eac-8a7d-27b91bc6f7dc)
+![17](https://github.com/user-attachments/assets/782986ce-6f20-4666-86a6-7a933f0a308a)
+![16](https://github.com/user-attachments/assets/8526abe2-b549-4e42-b501-24dddcf59306)
+![15  run_floorplan](https://github.com/user-attachments/assets/ba2d0161-43dd-4d03-80c7-c4140da3741f)
+![14 grid](https://github.com/user-attachments/assets/1eaa7540-3aed-4964-bcdc-e7ffa549bf97)
 
