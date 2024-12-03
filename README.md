@@ -1,6 +1,6 @@
 # Nasscom-vsd-soc-design-program
 Digital VLSI SoC Design and Planning
-Sky130 Day 1 - Inception of open-source EDA, OpenLANE and Sky130 PDK SKY130_D1_SK1 - How to talk to computers SKY_L3 - From Software Applications to Hardware
+#Sky130 Day 1 - Inception of open-source EDA, OpenLANE and Sky130 PDK SKY130_D1_SK1 - How to talk to computers SKY_L3 - From Software Applications to Hardware
 DAY1
 Processor/SoC:
 ![1 1 processor](https://github.com/user-attachments/assets/6660c8ad-df09-4cae-a160-3c6b42a947c9)
@@ -545,7 +545,7 @@ a) Global Routing: This step creates rough routes or paths to connect the differ
 b) Detailed Routing: After global routing, this step fine-tunes the connections, ensuring that the wires are correctly placed to make precise connections between the cells.
 
 RTL2GDS OpenLANE ASIC Flow Practical implementation:
-Day 1 Labs
+#Day 1 Labs
 Basic Linux Commands
 ### 1. `ls`  
    - a) Lists files and directories in the current directory.
@@ -743,7 +743,7 @@ In simple terms, `run_synthesis` translates your code (which tells the hardware 
 
 In summary, the flop ratio provides insights into the structure of a digital circuit, helping to optimize performance and efficiency based on the needs of the application.
 
-DAY2_Good floorplan vs bad floorplan and introduction to library cells:
+#DAY2_Good floorplan vs bad floorplan and introduction to library cells:
 ### 1. **Aspect Ratio (Ar)**:
    a) **Definition**: The aspect ratio of a layout is the ratio of its height to its width.  
    b) **Formula**:  
@@ -1351,7 +1351,7 @@ OpenROAD timing analysis process after modifying the `CTS_CLK_BUFFER_LIST`:
 
 
 
-Sky130 Day 5 - Final steps for RTL2GDS using tritonRoute and openSTA:
+#Sky130 Day 5 - Final steps for RTL2GDS using tritonRoute and openSTA:
 Here's a simplified, pointwise explanation of the steps mentioned:
 
 ---
