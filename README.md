@@ -1186,3 +1186,218 @@ LOAD POLY::
 ![15  run_floorplan](https://github.com/user-attachments/assets/ba2d0161-43dd-4d03-80c7-c4140da3741f)
 ![14 grid](https://github.com/user-attachments/assets/1eaa7540-3aed-4964-bcdc-e7ffa549bf97)
 
+OpenROAD timing analysis process after modifying the `CTS_CLK_BUFFER_LIST`:
+
+### **1. Checking the current value of the `CTS_CLK_BUFFER_LIST`:**
+
+   a) **Command:**  
+      `echo $::env(CTS_CLK_BUFFER_LIST)`  
+      **Purpose:** Prints the current list of clock buffers used during the clock tree synthesis (CTS) process.
+
+---
+
+### **2. Removing `sky130_fd_sc_hd__clkbuf_1` from the clock buffer list:**
+
+   a) **Command:**  
+      `set ::env(CTS_CLK_BUFFER_LIST) [lreplace $::env(CTS_CLK_BUFFER_LIST) 0 0]`  
+      **Purpose:** Removes the first element (`sky130_fd_sc_hd__clkbuf_1`) from the list by replacing the element at index `0` with nothing.
+
+   b) **Follow-up Check:**  
+      `echo $::env(CTS_CLK_BUFFER_LIST)`  
+      **Purpose:** Verifies that the buffer was successfully removed.
+
+---
+
+### **3. Checking the current DEF (Design Exchange Format) file:**
+
+   a) **Command:**  
+      `echo $::env(CURRENT_DEF)`  
+      **Purpose:** Prints the DEF file currently being used.
+
+---
+
+### **4. Changing the DEF file to the placement DEF file:**
+
+   a) **Command:**  
+      `set ::env(CURRENT_DEF) /openLANE_flow/designs/picorv32a/runs/24-03_10-03/results/placement/picorv32a.placement.def`  
+      **Purpose:** Sets the `CURRENT_DEF` variable to point to the placement DEF file, which represents the design after placement.
+
+---
+
+### **5. Re-running the CTS process:**
+
+   a) **Command:**  
+      `run_cts`  
+      **Purpose:** Runs the clock tree synthesis process again using the modified `CTS_CLK_BUFFER_LIST`.
+
+---
+
+### **6. Verifying the updated `CTS_CLK_BUFFER_LIST`:**
+
+   a) **Command:**  
+      `echo $::env(CTS_CLK_BUFFER_LIST)`  
+      **Purpose:** Prints the updated clock buffer list after re-running CTS.
+
+---
+
+### **7. Opening the OpenROAD tool:**
+
+   a) **Command:**  
+      `openroad`  
+      **Purpose:** Launches the OpenROAD tool for further analysis.
+
+---
+
+### **8. Reading the LEF (Library Exchange Format) file:**
+
+   a) **Command:**  
+      `read_lef /openLANE_flow/designs/picorv32a/runs/24-03_10-03/tmp/merged.lef`  
+      **Purpose:** Loads the LEF file containing library and technology information.
+
+---
+
+### **9. Reading the DEF file post-CTS:**
+
+   a) **Command:**  
+      `read_def /openLANE_flow/designs/picorv32a/runs/24-03_10-03/results/cts/picorv32a.cts.def`  
+      **Purpose:** Loads the DEF file generated after clock tree synthesis.
+
+---
+
+### **10. Creating and saving an OpenROAD database:**
+
+   a) **Command 1:**  
+      `write_db pico_cts1.db`  
+      **Purpose:** Saves the current design state to a database file named `pico_cts1.db`.
+
+   b) **Command 2:**  
+      `read_db pico_cts.db`  
+      **Purpose:** Loads an existing OpenROAD database named `pico_cts.db`.
+
+---
+
+### **11. Reading the Verilog netlist post-CTS:**
+
+   a) **Command:**  
+      `read_verilog /openLANE_flow/designs/picorv32a/runs/24-03_10-03/results/synthesis/picorv32a.synthesis_cts.v`  
+      **Purpose:** Loads the Verilog netlist generated after synthesis and CTS.
+
+---
+
+### **12. Reading and linking the design library:**
+
+   a) **Command 1:**  
+      `read_liberty $::env(LIB_SYNTH_COMPLETE)`  
+      **Purpose:** Loads the Liberty file that contains the timing information for the design.
+
+   b) **Command 2:**  
+      `link_design picorv32a`  
+      **Purpose:** Links the netlist with the loaded library, enabling timing analysis.
+
+---
+
+### **13. Reading and applying the SDC file:**
+
+   a) **Command:**  
+      `read_sdc /openLANE_flow/designs/picorv32a/src/my_base.sdc`  
+      **Purpose:** Loads the SDC (Synopsys Design Constraints) file that specifies clock and timing constraints.
+
+---
+
+### **14. Setting all clocks as propagated clocks:**
+
+   a) **Command:**  
+      `set_propagated_clock [all_clocks]`  
+      **Purpose:** Marks all clocks in the design as propagated, enabling accurate timing analysis.
+
+---
+
+### **15. Generating timing and clock skew reports:**
+
+   a) **Timing Report:**  
+      `report_checks -path_delay min_max -fields {slew trans net cap input_pins} -format full_clock_expanded -digits 4`  
+      **Purpose:** Generates a detailed timing report including delays, slew, capacitance, and transition times.
+
+   b) **Hold Skew Report:**  
+      `report_clock_skew -hold`  
+      **Purpose:** Reports the hold skew in the design.
+
+   c) **Setup Skew Report:**  
+      `report_clock_skew -setup`  
+      **Purpose:** Reports the setup skew in the design.
+
+---
+
+### **16. Exiting OpenROAD and returning to OpenLANE:**
+
+   a) **Command:**  
+      `exit`  
+      **Purpose:** Exits the OpenROAD tool and returns to the OpenLANE environment.
+
+---
+
+### **17. Reverting `CTS_CLK_BUFFER_LIST` to include `sky130_fd_sc_hd__clkbuf_1`:**
+
+   a) **Command:**  
+      `set ::env(CTS_CLK_BUFFER_LIST) [linsert $::env(CTS_CLK_BUFFER_LIST) 0 sky130_fd_sc_hd__clkbuf_1]`  
+      **Purpose:** Inserts `sky130_fd_sc_hd__clkbuf_1` back into the clock buffer list at the first position.
+
+   b) **Follow-up Check:**  
+      `echo $::env(CTS_CLK_BUFFER_LIST)`  
+      **Purpose:** Verifies that the buffer was successfully added back.
+![1](https://github.com/user-attachments/assets/e49a66be-c303-4756-be6c-abf7409784fe)
+![2](https://github.com/user-attachments/assets/42627dd3-6d67-499d-9518-65eb61d8aa21)
+![3](https://github.com/user-attachments/assets/c8561ef0-b335-4bfd-93dd-e810772d4e0a)
+
+
+
+Sky130 Day 5 - Final steps for RTL2GDS using tritonRoute and openSTA:
+Here's a simplified, pointwise explanation of the steps mentioned:
+
+---
+
+### **1. Navigate to the OpenLane directory**
+   - **a)** Open the terminal.
+   - **b)** Use the command `cd Desktop/work/tools/openlane_working_dir/openlane` to move into the OpenLane working directory.  
+      (This is the folder where OpenLane is installed.)
+
+---
+
+### **2. Start Docker**
+   - **a)** Type `Docker` in the terminal and press **Enter**.
+   - **b)** This launches Docker, which is required to run OpenLane.  
+      (Docker is a platform that helps run tools like OpenLane in an isolated environment.)
+
+---
+
+### **3. Invoke OpenLane in interactive mode**
+   - **a)** Use the command `./flow.tcl -interactive`.  
+      (This starts OpenLane in an interactive session where you can type commands directly.)
+
+---
+
+### **4. Load OpenLane version 0.9**
+   - **a)** Type `package require openlane 0.9`.  
+      (This ensures that the specific version of OpenLane (0.9) is loaded and ready for use.)
+
+---
+
+### **5. Prepare the design for synthesis**
+   - **a)** Use the command `prep -design picorv32a -tag 02-12_16-09`.  
+      - **`-design picorv32a`**: Specifies the design you are working on (in this case, a RISC-V processor core called "picorv32a").  
+      - **`-tag 02-12_16-09`**: Creates a unique tag (label) for this preparation step, which is often based on the current date and time.
+   - **b)** This command prepares the design files and sets up the working environment.
+
+---
+
+### **6. Check the current DEF file**
+   - **a)** Type `echo $::env(CURRENT_DEF)`.  
+      (This checks and prints the path of the current DEF (Design Exchange Format) file being worked on.)  
+      - **DEF file**: Contains details about the physical layout of the design, including the placement of components and connections.
+![7](https://github.com/user-attachments/assets/53ef92fa-77af-4e05-8ea1-a73fa7d4782d)
+![6](https://github.com/user-attachments/assets/da5a0872-63f8-424b-9bfe-24195e828ab4)
+![5](https://github.com/user-attachments/assets/b126882b-49cf-463e-8a6f-fe10959f7354)
+![4](https://github.com/user-attachments/assets/658549a1-cb45-4cbf-963c-49ccbf065e07)
+![9](https://github.com/user-attachments/assets/abbb5dea-9908-4fd6-a1a8-cb7b6e0d06c1)
+![8](https://github.com/user-attachments/assets/ed9c44f7-a8da-46f1-93e9-ed3f83b401ff)
+
