@@ -1,4 +1,4 @@
-# nasscom-vsd-soc-design-program
+# Nasscom-vsd-soc-design-program
 Digital VLSI SoC Design and Planning
 Sky130 Day 1 - Inception of open-source EDA, OpenLANE and Sky130 PDK SKY130_D1_SK1 - How to talk to computers SKY_L3 - From Software Applications to Hardware
 DAY1
@@ -1394,10 +1394,10 @@ Here's a simplified, pointwise explanation of the steps mentioned:
    - **a)** Type `echo $::env(CURRENT_DEF)`.  
       (This checks and prints the path of the current DEF (Design Exchange Format) file being worked on.)  
       - **DEF file**: Contains details about the physical layout of the design, including the placement of components and connections.
-![7](https://github.com/user-attachments/assets/53ef92fa-77af-4e05-8ea1-a73fa7d4782d)
-![6](https://github.com/user-attachments/assets/da5a0872-63f8-424b-9bfe-24195e828ab4)
-![5](https://github.com/user-attachments/assets/b126882b-49cf-463e-8a6f-fe10959f7354)
-![4](https://github.com/user-attachments/assets/658549a1-cb45-4cbf-963c-49ccbf065e07)
-![9](https://github.com/user-attachments/assets/abbb5dea-9908-4fd6-a1a8-cb7b6e0d06c1)
-![8](https://github.com/user-attachments/assets/ed9c44f7-a8da-46f1-93e9-ed3f83b401ff)
+![4](https://github.com/user-attachments/assets/85d1edbc-3471-457e-aa19-cf2f3b2cbc18)
+![5](https://github.com/user-attachments/assets/a011c9c3-c8c9-40b3-b159-d194be6200e1)
+![6](https://github.com/user-attachments/assets/8414dbd2-9926-4d7c-bbba-efdd88601034)
+![7](https://github.com/user-attachments/assets/ea01a0ec-b3db-4bd7-93a6-a82fa0eeb764)
+![9](https://github.com/user-attachments/assets/f928eac6-16cd-4f14-9db5-a5044315583e)
+
 
